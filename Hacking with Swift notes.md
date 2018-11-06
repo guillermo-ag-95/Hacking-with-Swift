@@ -53,15 +53,15 @@
 
 14. In the viewDidLoad, we can set a title for the navigation controller setting the variable "title".
 
-15. In iOS 11, we can set larger titles. We need add this to the view controller of the landing view:
+15. From iOS 11, we can set larger titles. We need add this to the view controller of the landing view, inside the viewDidLoad method:
 - navigationController?.navigationBar.prefersLargeTitles = true
 
-16. In iOS 11, to avoid larger titles in a specific view, add this:
+16. From iOS 11, to avoid larger titles in a specific view, add this in the viewDidLoad of that view:
 - navigationItem.largeTitleDisplayMode = .never
 
 17. In notch-equipped devices, to avoid blank spaces, uncheck the "Safe Area Layout Guide box" in the size inspector. In this project, this is only done when dealing with images.
 
-18. In notch-equipped devices, to hide the home indicator, do the following:
+18. In notch-equipped devices, to hide the home indicator, override the following variable in the chosen view:
 - override var prefersHomeIndicatorAutoHidden: Bool {
         return navigationController?.hidesBarsOnTap ?? false
     }
