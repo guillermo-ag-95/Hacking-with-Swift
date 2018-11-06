@@ -1,6 +1,6 @@
 # Hacking with Swift notes
 
-## Project1
+## Project1: Storm Viewer
 
 1. Keyboard commands to start and stop the build:
 - Cmd+R to run the project.
@@ -65,3 +65,21 @@
 - override var prefersHomeIndicatorAutoHidden: Bool {
         return navigationController?.hidesBarsOnTap ?? false
     }
+
+## Project2: Guess the Flag
+
+1. To draw the border of a button, add the following line to the viewDidLoad:
+- button.layer.borderWidth = 1
+
+2. To change the color of the border, add this to the viewDidLoad:
+- button.layer.borderColor = UIColor.lightGray.cgColor
+
+3. You can add a tag to an IB object. To do so, press Alt+Cmd+4 and look for Tag. You can later retrieve the tag using sender.tag.
+
+4. To add a alert message, we can use code similar to this one:
+- let ac = UIAlertController(title: title, message: "Your score is \(score).", preferredStyle: .alert)
+ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
+present(ac, animated: true)
+
+5. If the handler of the previous code breaks, you must change the declaration of the method with this:
+- func askQuestion(action: UIAlertAction! = nil) { ... }
