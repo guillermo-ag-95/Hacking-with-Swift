@@ -83,3 +83,24 @@ present(ac, animated: true)
 
 5. If the handler of the previous code breaks, you must change the declaration of the method with this:
 - func askQuestion(action: UIAlertAction! = nil) { ... }
+
+## Project3: Social Media
+
+1. To rename a project in Xcode, follow this guide and rechoose the Info.plist to avoid a build failure:
+- https://help.apple.com/xcode/mac/10.0/#/dev3db3afe4f
+
+2. To create a Sharing button we need to add the following line to the viewDidLoad of the view where the button will appear. This code defines the right button of the navigation bar. The selector points to the triggered method:
+- navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
+
+3. The method we need to trigger the sharing action is this one.
+- @objc func shareTapped() {
+        let vc = UIActivityViewController(activityItems: [imageView.image!], applicationActivities: [])
+        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(vc, animated: true)
+    }
+
+4. The @objc annotation is used to call Swift code with Objective-C.
+
+5. UIActivityViewController refers to the sharing component.
+
+6. We need to modify the Info.plist to avoid the app crashes when we tap on "Save Image". By default, iOS app cannot access the user's photo library. We must add a row with the values "Privacy - Photo Library Additions Usage Description" and, to the right, the description that the user will receive.
