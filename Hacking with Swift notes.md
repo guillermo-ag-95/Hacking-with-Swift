@@ -172,3 +172,37 @@ let progressButton = UIBarButtonItem(customView: progressView)```
     }
     decisionHandler(.cancel)
 }```. If the link does not point to a controlled web, it won't load.
+
+## Project 5: Word Scramble
+
+1. To add info from a txt we need to follow three steps:
+- Find the path of the file.
+- Load the data.
+- Split the data.
+
+2. To find the path we will use the method ```Bundle.main.path(fromResource:)```
+
+3. To load the data, we can create the array with the return of the previous method.
+
+4. To split the data, we can use ```components(separatedBy:)``` with '/n' as the separator.
+
+5. We can choose a random string from an array using ```.randomElement()```
+
+6. To empty an array without reducing its memory size, use ```.removeAll(keepingCapacity: true)```
+
+7. Use ```unowned``` when passing an external variable to a closure. If not, we can create an cycle (Object A needs B and B needs A).
+
+8. We can use ```reloadData()``` to reload the table but that's not efficient if we only want to add a row. We should use ```let indexPath = IndexPath(row: 0, section: 0) tableView.insertRows(at: [indexPath], with: .automatic)```
+
+9. The ```IndexPath``` object contains the row and section of every item of a table.
+
+10. To spot spelling mistakes we can use this method:
+- func isReal(word: String) -> Bool {
+    let checker = UITextChecker()
+    let range = NSMakeRange(0, word.utf16.count)
+    let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
+
+    return misspelledRange.location == NSNotFound
+}
+
+11. If we are counting anything from our code, use ```String.count```. If you are counting from an user input, use ```String.uft16.count```
