@@ -173,7 +173,7 @@ let progressButton = UIBarButtonItem(customView: progressView)```
     decisionHandler(.cancel)
 }```. If the link does not point to a controlled web, it won't load.
 
-## Project 5: Word Scramble
+## Project5: Word Scramble
 
 1. To add info from a txt we need to follow three steps:
 - Find the path of the file.
@@ -206,3 +206,49 @@ let progressButton = UIBarButtonItem(customView: progressView)```
 }
 
 11. If we are counting anything from our code, use ```String.count```. If you are counting from an user input, use ```String.uft16.count```
+
+## Project6: Auto Layout
+
+1. To choose what device orientation we want to support, press Cmd+1, select "General" at the top and look for "Device Orientation".
+
+2. We can set constraints to be not only equal, but greater-than-equal or less-than-equal. This will create constraints like "keep this separation of 20 points or more". To do so, choose an constraint and press Cmd+Alt+4. The selector is named "Relation" under "Bottom Alignment Constraint".
+
+3. To keep a relation between the height or width of two objects we can set "Equal Heights" and "Equal Width" constraints.
+
+4. To keep the aspect ratio of an object, we can set an "Aspect Ratio" constraints.
+
+5. If we create constraints using code, we need to set `translatesAutoresizingMaskIntoConstraints` to false. With this, we will ignore Auto Layout constraints for this object.
+
+6. `sizeToFit()` adjusts the object size to its content.
+
+7. The module used to code constraints is named Auto Layout Visual Format Language (VFL):
+- First, we create a dictionary [String:UILabel] that, for every label object we archive its name. Let's say: ["Label1": label1].
+- Second, we add constraints ```for label in viewsDictionary.keys {
+    view.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: "H:|[\(label)]|", options: [], metrics: nil, views: viewsDictionary))
+}```.
+- The `withVisualForm` parameter is used to introduce the VFL syntax. `H:|[\(label)]|` means: "Horizontally (H:), from edge (|) to edge (|).
+- Third, we add the vertical constraints: view.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: "V:|[label1(==88)]-[label2(==88)]-[label3(==88)]-[label4(==88)]-[label5(==88)]-(>=10)-|", options: [], metrics: nil, views: viewsDictionary))
+- Here, we can define the height of every object and the space from the bottom [-(>=10)-].
+
+8. Where metrics, we can add another dictionary to avoid these multiples hardcoded values. Let's define a `let metrics = ["labelHeight": 88]` and pass it using the metrics parameter. We also need to change the constraints to use the dictiorary: `V:|[label1(labelHeight)]-[la`...
+
+9. To set a different priority to a constraint (deafult = 1000, then down to 1), we can add an `@999` to set the priority to any number: `V:|[label1(labelHeight@999)]-[la`...
+
+10. We can also use Auto Layout anchors as a way to set constraints:
+
+```
+var previous: UILabel?
+
+for label in [label1, label2, label3, label4, label5] {
+    label.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+    label.heightAnchor.constraint(equalToConstant: 88).isActive = true
+
+    if let previous = previous {
+        // we have a previous label – create a height constraint
+        label.topAnchor.constraint(equalTo: previous.bottomAnchor, constant: 10).isActive = true
+    }
+
+    // set the previous label to be the current one, for the next loop iteration
+    previous = label
+}
+```
