@@ -252,3 +252,47 @@ for label in [label1, label2, label3, label4, label5] {
     previous = label
 }
 ```
+
+## Project7: Whitehouse Petitions
+
+1. When we add a Navigation Controller and a Tab Bar Controller to the Storyboard, we first select "Embed in > Navigation controller" and just next "Embed in > Tab bar controller". With this, Navigation Controller will be inside a Tab bar too.
+
+2. To change the Tab Bar icon, click on its icon in the Navigation Controller view (clicking in the Tab Bar one won't trigger the `UITabBarItem`).
+
+3. We can work with JSON if our struct conforms to `Codable`.
+
+4. Steps to retrieve the data from an API:
+- Add the API URL to the viewDidLoad.
+- Create a `URL` object with the URL string using `if let { ... }`.
+- Create a `Data` object with the content from the `URL` using `if let` and `try?` because we might get an error.
+
+5. To parse the data from JSON to Swift we need to create a `parse()` function. Here we:
+- Create a `JSONDecoder()`.
+- Decode the data `if let jsonPetitions = try? decoder.decode(Petitions.self, from: json) { ... }`.
+- Update the values: `petitions = jsonPetitions.results tableView.reloadData()`.
+
+6. To update the cell with the new information, we need to change code from the `cellForRowAt` method:
+```
+let petition = petitions[indexPath.row]
+cell.textLabel?.text = petition.title
+cell.detailTextLabel?.text = petition.body
+```
+
+7. To pass information from the table to the detail view, we need to override the `didSelectRowAt` method:
+```
+override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = DetailViewController()
+        vc.detailItem = petitions[indexPath.row]
+        navigationController?.pushViewController(vc, animated: true)
+    }
+```
+
+8. To add a second `UITabBarItem` without usign IB, we need to modify `didFinishLaunchingWithOptions` method in `AppDelegate.swift`:
+```
+if let tabBarController = window?.rootViewController as? UITabBarController {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let vc = storyboard.instantiateViewController(withIdentifier: "NavController")
+            vc.tabBarItem = UITabBarItem(tabBarSystemItem: .topRated, tag: 1)
+            tabBarController.viewControllers?.append(vc)
+        }
+```
