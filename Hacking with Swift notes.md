@@ -26,28 +26,38 @@
 - All+Cmd+4 to open the Attributes inspector.
 
 8. In order to make the table work, we need to override two functions:
-- ```override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { ... }```
-- ```override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell { ... }```
+```
+override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { ... }
+```
+```
+override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell { ... }
+```
 
 9. More keyboard commands for IB:
 - Shift+Alt+Cmd+= to reset to suggested constraints.
 - Alt+Cmd+Return to show the Assistant editor.
 
 10. In order to show a picture from the table, we need to override the function below and set the image in the viewDidLoad of the other view:
-- ```override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) { ... }```
+```
+override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) { ... }
+```
 
 11. To avoid the images to strech, change "Scale to fill" to "Aspect fit".
 
 12. To remove the Navigation Controller topbar during fullscreen, add these functions below the viewDidLoad of the view:
-- override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.hidesBarsOnTap = true
-    }
+```
+override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    navigationController?.hidesBarsOnTap = true
+}
+```
 
-- override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navigationController?.hidesBarsOnTap = false
-    }
+```
+override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    navigationController?.hidesBarsOnTap = false
+}
+```
 
 13. We can add a ">" to the right of the row. To do so, choose "Disclosure indicator" from Accesory in the IB.
 
@@ -62,9 +72,11 @@
 17. In notch-equipped devices, to avoid blank spaces, uncheck the "Safe Area Layout Guide box" in the size inspector. In this project, this is only done when dealing with images.
 
 18. In notch-equipped devices, to hide the home indicator, override the following variable in the chosen view:
-- override var prefersHomeIndicatorAutoHidden: Bool {
-        return navigationController?.hidesBarsOnTap ?? false
-    }
+```
+override var prefersHomeIndicatorAutoHidden: Bool {
+    return navigationController?.hidesBarsOnTap ?? false
+}
+```
 
 ## Project2: Guess the Flag
 
@@ -77,12 +89,16 @@
 3. You can add a tag to an IB object. To do so, press Alt+Cmd+4 and look for Tag. You can later retrieve the tag using ```sender.tag```.
 
 4. To add a alert message, we can use code similar to this one:
-- let ac = UIAlertController(title: title, message: "Your score is \(score).", preferredStyle: .alert)
+```
+let ac = UIAlertController(title: title, message: "Your score is \(score).", preferredStyle: .alert)
 ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
 present(ac, animated: true)
+```
 
 5. If the handler of the previous code breaks, you must change the declaration of the method with this:
-- ```func askQuestion(action: UIAlertAction! = nil) { ... }```
+```
+func askQuestion(action: UIAlertAction! = nil) { ... }
+```
 
 ## Project3: Social Media
 
@@ -93,11 +109,13 @@ present(ac, animated: true)
 - ```navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))```
 
 3. The method we need to trigger the sharing action is this one.
-- @objc func shareTapped() {
-        let vc = UIActivityViewController(activityItems: [imageView.image!], applicationActivities: [])
-        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
-        present(vc, animated: true)
-    }
+```
+@objc func shareTapped() {
+    let vc = UIActivityViewController(activityItems: [imageView.image!], applicationActivities: [])
+    vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+    present(vc, animated: true)
+}
+```
 
 4. The @objc annotation is used to call Swift code with Objective-C.
 
@@ -110,33 +128,45 @@ present(ac, animated: true)
 1. In the first steps to create a web browser we need to:
 - Import the WebKit framework.
 - Declare a WKWebView variable.
-- Override ```override func loadView() {
+- Override
+
+ ```
+ override func loadView() {
     webView = WKWebView()
     webView.navigationDelegate = self
     view = webView
-}```
+}
+```
 - Conform the protocol ```WKNavigationDelegate```
 
 2. In the viewDidLoad method, we can to add the following lines to test the app:
-- let url = URL(string: "https://www.hackingwithswift.com")!
+```
+let url = URL(string: "https://www.hackingwithswift.com")!
 webView.load(URLRequest(url: url))
 webView.allowsBackForwardNavigationGestures = true
+```
 
 3. If we want to add a popover we need this steps:
 - Add ```navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Open", style: .plain, target: self, action: #selector(openTapped))``` to create the button. When tapped, it triggers the selector method.
-- We create the method from the selector ```@objc func openTapped() {
-        let ac = UIAlertController(title: "Open page…", message: nil, preferredStyle: .actionSheet)
-        ac.addAction(UIAlertAction(title: "apple.com", style: .default, handler: openPage))
-        ac.addAction(UIAlertAction(title: "hackingwithswift.com", style: .default, handler: openPage))
-        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        ac.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
-        present(ac, animated: true)
-    }```
+- We create the method from the selector
+```
+@objc func openTapped() {
+    let ac = UIAlertController(title: "Open page…", message: nil, preferredStyle: .actionSheet)
+    ac.addAction(UIAlertAction(title: "apple.com", style: .default, handler: openPage))
+    ac.addAction(UIAlertAction(title: "hackingwithswift.com", style: .default, handler: openPage))
+    ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+    ac.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
+    present(ac, animated: true)
+}
+```
 Every ```UIAlertAction``` will be an option of the popover. Everyone indludes a handler to trigger a method when pressed except for the cancel one; it just hide the popover.
-- Create the method from the ```UIAlertAction``` handlers ```func openPage(action: UIAlertAction) {
-        let url = URL(string: "https://" + action.title!)!
-        webView.load(URLRequest(url: url))
-    }``` 
+- Create the method from the ```UIAlertAction``` handlers
+```
+func openPage(action: UIAlertAction) {
+    let url = URL(string: "https://" + action.title!)!
+    webView.load(URLRequest(url: url))
+}
+``` 
 
 4. ```ac.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem``` is used only on the iPad and tells iOS where it should make the action sheet be anchored.
 
@@ -148,19 +178,32 @@ Every ```UIAlertAction``` will be an option of the popover. Everyone indludes a 
 
 6. To create a progress bar we need to:
 - Declare a ```UIProgressView``` variable.
-- Add these lines to the viewDidLoad (just before the ```let spacer``` in this case) ```progressView = UIProgressView(progressViewStyle: .default)
+- Add these lines to the viewDidLoad (just before the ```let spacer``` in this case)
+```
+progressView = UIProgressView(progressViewStyle: .default)
 progressView.sizeToFit()
-let progressButton = UIBarButtonItem(customView: progressView)```
-- Update the toolbar items to add the progress bar: ```toolbarItems = [progressButton, spacer, refresh]```
-- Add a observer to check the value of the estimated progress ```webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)```
-- Implement this method: ```override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+let progressButton = UIBarButtonItem(customView: progressView)
+```
+- Update the toolbar items to add the progress bar
+```
+toolbarItems = [progressButton, spacer, refresh]
+```
+- Add a observer to check the value of the estimated progress
+```
+webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
+```
+- Implement this method
+```
+override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
     if keyPath == "estimatedProgress" {
         progressView.progress = Float(webView.estimatedProgress)
     }
-}```
+}
+```
 
-7. We can decide what to do with a web request using:
-- this method ```func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+7. We can decide what to do with a web request using this method:
+```
+func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
     let url = navigationAction.request.url
     if let host = url?.host {
         for website in websites {
@@ -171,7 +214,9 @@ let progressButton = UIBarButtonItem(customView: progressView)```
         }
     }
     decisionHandler(.cancel)
-}```. If the link does not point to a controlled web, it won't load.
+}
+```
+If the link does not point to a controlled web, it won't load.
 
 ## Project5: Word Scramble
 
@@ -197,13 +242,15 @@ let progressButton = UIBarButtonItem(customView: progressView)```
 9. The ```IndexPath``` object contains the row and section of every item of a table.
 
 10. To spot spelling mistakes we can use this method:
-- func isReal(word: String) -> Bool {
+```
+func isReal(word: String) -> Bool {
     let checker = UITextChecker()
     let range = NSMakeRange(0, word.utf16.count)
     let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
 
     return misspelledRange.location == NSNotFound
 }
+```
 
 11. If we are counting anything from our code, use ```String.count```. If you are counting from an user input, use ```String.uft16.count```
 
@@ -223,11 +270,17 @@ let progressButton = UIBarButtonItem(customView: progressView)```
 
 7. The module used to code constraints is named Auto Layout Visual Format Language (VFL):
 - First, we create a dictionary [String:UILabel] that, for every label object we archive its name. Let's say: ["Label1": label1].
-- Second, we add constraints ```for label in viewsDictionary.keys {
+- Second, we add constraints
+```
+for label in viewsDictionary.keys {
     view.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: "H:|[\(label)]|", options: [], metrics: nil, views: viewsDictionary))
-}```.
+}
+```
 - The `withVisualForm` parameter is used to introduce the VFL syntax. `H:|[\(label)]|` means: "Horizontally (H:), from edge (|) to edge (|).
-- Third, we add the vertical constraints: view.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: "V:|[label1(==88)]-[label2(==88)]-[label3(==88)]-[label4(==88)]-[label5(==88)]-(>=10)-|", options: [], metrics: nil, views: viewsDictionary))
+- Third, we add the vertical constraints
+```
+view.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: "V:|[label1(==88)]-[label2(==88)]-[label3(==88)]-[label4(==88)]-[label5(==88)]-(>=10)-|", options: [], metrics: nil, views: viewsDictionary))
+```
 - Here, we can define the height of every object and the space from the bottom [-(>=10)-].
 
 8. Where metrics, we can add another dictionary to avoid these multiples hardcoded values. Let's define a `let metrics = ["labelHeight": 88]` and pass it using the metrics parameter. We also need to change the constraints to use the dictiorary: `V:|[label1(labelHeight)]-[la`...
@@ -296,3 +349,17 @@ if let tabBarController = window?.rootViewController as? UITabBarController {
             tabBarController.viewControllers?.append(vc)
         }
 ```
+## Project8: 7 Swifty Words
+
+1. If you want to resize a Text Field object, you need to set it borderless.
+
+2. Instead of creating one outlets for every button (20 outlets in this case), we can use the tag. We loop through the subviews where `subview.tag == 1001`
+```
+for subview in view.subviews where subview.tag == 1001 {
+    let btn = subview as! UIButton
+    letterButtons.append(btn)
+    btn.addTarget(self, action: #selector(letterTapped), for: .touchUpInside)
+}
+```
+
+3. Using `UIButton.addTarget(...)` let us attach a method to the button. This is the code way to Crtl-Drag in the Storyboard.
