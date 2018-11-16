@@ -363,3 +363,48 @@ for subview in view.subviews where subview.tag == 1001 {
 ```
 
 3. Using `UIButton.addTarget(...)` let us attach a method to the button. This is the code way to Crtl-Drag in the Storyboard.
+
+## Project 9: Grand Central Dispatch
+
+1. If we want to send a chunck of code to the background, we need to call `async()` using the GCD.
+```
+DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+    if let url = URL(string: urlString) {
+        if let data = try? Data(contentsOf: url) {
+            self.parse(json: data)
+            return
+        }
+    }
+}
+
+showError()
+```
+
+2. If we want to update anything related to the interface, we need to use
+```
+DispatchQueue.main.async { [unowned self] in
+...
+}
+```
+
+3. Another way of using the GCD is using `performSelector()`. We choose between `performSelector(inBackground:)` and `performSelector(onMainThread:)` to specify what code to run in which thread.
+```
+override func viewDidLoad() {
+    super.viewDidLoad()
+
+    performSelector(inBackground: #selector(fetchJSON), with: nil)
+}
+```
+```
+func parse(json: Data) {
+    let decoder = JSONDecoder()
+
+    if let jsonPetitions = try? decoder.decode(Petitions.self, from: json) {
+        petitions = jsonPetitions.results
+        tableView.performSelector(onMainThread: #selector(UITableView.reloadData), with: nil, waitUntilDone: false)
+    } else {
+        performSelector(onMainThread: #selector(showError), with: nil, waitUntilDone: false)
+    }
+}
+```
+Every code that is called inside a selector must be defined as an @objc method.
