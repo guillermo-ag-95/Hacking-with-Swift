@@ -408,3 +408,65 @@ func parse(json: Data) {
 }
 ```
 Every code that is called inside a selector must be defined as an @objc method.
+
+## Project10: Names to Faces
+
+1. In order to create a custom cell you need to:
+- Create a custom class with the @IBOutlets attributes.
+- In the IB, declare the cell with the custom class type.
+- Press Cmd+Alt+6 and Crtl+drag from the right circle to the Storyboard to connect them.
+
+2. As with TableViewController, we need to declare two methods to make CollectionViewController to work
+```
+override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    return 10
+}
+
+override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Person", for: indexPath) as! PersonCell
+    return cell
+}
+```
+
+3. `UIImagePickerController` lets us import pictures to the app. In this code
+```
+@objc func addNewPerson() {
+    let picker = UIImagePickerController()
+    picker.allowsEditing = true
+    picker.delegate = self
+    present(picker, animated: true)
+}
+```
+
+setting `picker.allowsEditing = true` is the way to tell the app that we can crop the picture.
+
+4. To conform the `UIImagePickerControllerDelegate` protocol, we need to override a method
+```
+func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    guard let image = info[.originalImage] as? UIImage else { return }
+
+    let imageName = UUID().uuidString
+    let imagePath = getDocumentsDirectory().appendingPathComponent(imageName)
+
+    if let jpegData = image.jpegData(compressionQuality: 0.8) {
+        try? jpegData.write(to: imagePath)
+    }
+
+    dismiss(animated: true)
+}
+
+func getDocumentsDirectory() -> URL {
+    let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+    return paths[0]
+}
+```
+
+- `UUID().uuidString` returns a unique identifier for that image.
+- `getDocumentsDirectory()` is a custom method where we return the app directory where we want to store the image.
+- We need to convert from `UIImage` to `Data` in order to store it.
+
+5. To retrieve the data stored in the disk, we need to access the path in the `cellForItemAt` method.
+```
+let path = getDocumentsDirectory().appendingPathComponent(person.image)
+cell.imageView.image = UIImage(contentsOfFile: path.path)
+```
