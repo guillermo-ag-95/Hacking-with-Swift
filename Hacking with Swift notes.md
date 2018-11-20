@@ -470,3 +470,69 @@ func getDocumentsDirectory() -> URL {
 let path = getDocumentsDirectory().appendingPathComponent(person.image)
 cell.imageView.image = UIImage(contentsOfFile: path.path)
 ```
+
+## Project11: Pachinko
+
+1. SpriteKit equivalent to IB is named Scene Editor.
+
+2. To the project to a vanilla state we need to:
+- Change the code from GameScene.swift
+```
+import SpriteKit
+
+class GameScene: SKScene {
+    override func didMove(to view: SKView) {
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    }
+}
+```
+- Change the Anchor point in the Attributes inspector to (X,Y) = (0,0).
+- Change the size of the screen to be (W,H) = (1024,768).
+- Delete `Actions.sks`.
+
+3. To place an image in a game, we use `SKSpriteNode`.
+
+4. As X and Y is based on the center of a the screen, to place the background we will use (1024/2, 768/2).
+
+5. With `background.zPosition = -1` we place an object behind everything.
+
+6. To add a node to the scene, we use `addChild()`.
+
+7. The `didMove` method is the equivalent to `viewDidLoad` in iOS.
+
+8. `touchesBegan()` includes what happens when we tap the screen, even with multiple fingers.
+
+9. We can add physics to the body with this: `box.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 64, height: 64))` but we need to also add physics to the scene with this line `physicsBody = SKPhysicsBody(edgeLoopFrom: frame)`
+
+10. If we want to add circular physics to the object we need to use `SKPhysicsBody(circleOfRadius: ball.size.width / 2.0)`
+
+11. `ball.physicsBody?.restitution = 0.4` sets the bounciness of the ball.
+
+12. To make your object spin forever, add this code:
+```
+let spin = SKAction.rotate(byAngle: .pi, duration: 10)
+let spinForever = SKAction.repeatForever(spin)
+slotGlow.run(spinForever)
+```
+
+13. To add a label to track the score we need to add this code:
+```
+var scoreLabel: SKLabelNode!
+
+var score = 0 {
+    didSet {
+        scoreLabel.text = "Score: \(score)"
+    }
+}
+```
+```
+scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
+scoreLabel.text = "Score: 0"
+scoreLabel.horizontalAlignmentMode = .right
+scoreLabel.position = CGPoint(x: 980, y: 700)
+addChild(scoreLabel)
+```
+
+14. To work with particles, use `SKEmitterNode`.
