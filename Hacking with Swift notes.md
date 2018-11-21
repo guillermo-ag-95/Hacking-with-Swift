@@ -536,3 +536,70 @@ addChild(scoreLabel)
 ```
 
 14. To work with particles, use `SKEmitterNode`.
+
+## Project12: UserDefaults
+
+1. In order to save some data in disk, we use `UserDefaults`. If we want to use this, we need to conform the class to `NSCoding` and complete these methods:
+```
+required init(coder aDecoder: NSCoder) {
+    name = aDecoder.decodeObject(forKey: "name") as! String
+    image = aDecoder.decodeObject(forKey: "image") as! String
+}
+
+func encode(with aCoder: NSCoder) {
+    aCoder.encode(name, forKey: "name")
+    aCoder.encode(image, forKey: "image")
+}
+```
+
+2. To save data using `UserDefaults`, we add a new method where we save it using `NSKeyedArchiver`
+```
+func save() {
+    if let savedData = try? NSKeyedArchiver.archivedData(withRootObject: people, requiringSecureCoding: false) {
+        let defaults = UserDefaults.standard
+        defaults.set(savedData, forKey: "people")
+    }
+}
+```
+
+3. To retrieve the data, we add this code to the `viewDidLoad`
+```
+let defaults = UserDefaults.standard
+
+if let savedPeople = defaults.object(forKey: "people") as? Data {
+    if let decodedPeople = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(savedPeople) as? [Person] {
+        people = decodedPeople ?? [Person]()
+    }
+}
+```
+
+4. `NSCoding` is used when we have Objective-C code along side with Swift code. When we only have Swift code, `Codable` is a better option.
+- `Codable` works with both, structs and classes.
+- Unless we need more detail, we don't need to write `encode()` and `decode()` methods.
+- `Codable` reads and write in JSON.
+
+5. We just need to conform the class or struct to `Codable` and make the same changes as before but with a few changes.
+```
+func save() {
+    let jsonEncoder = JSONEncoder()
+    if let savedData = try? jsonEncoder.encode(people) {
+        let defaults = UserDefaults.standard
+        defaults.set(savedData, forKey: "people")
+    } else {
+        print("Failed to save people.")
+    }
+}
+```
+```
+let defaults = UserDefaults.standard
+
+if let savedPeople = defaults.object(forKey: "people") as? Data {
+    let jsonDecoder = JSONDecoder()
+
+    do {
+        people = try jsonDecoder.decode([Person].self, from: savedPeople)
+    } catch {
+        print("Failed to load people")
+    }
+}
+```
