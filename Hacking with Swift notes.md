@@ -603,3 +603,57 @@ if let savedPeople = defaults.object(forKey: "people") as? Data {
     }
 }
 ```
+
+## Project13: Instafilter
+
+1. If we want to let Xcode choose the suggested IB constraints, choose the `ViewController` and click on `Editor > Resolve Auto Layout Issues > Reset To Suggested Constraints`.
+
+2. If we want to use photos from the camera roll, we need to use this method
+```
+@objc func importPicture() {
+    let picker = UIImagePickerController()
+    picker.allowsEditing = true
+    picker.delegate = self
+    present(picker, animated: true)
+}
+```
+change the Info.plist with a new property: `Privacy - Photo Library Additions Usage Description` and its description and we need to conform the class to the required delegates.
+```
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate { ... }
+```
+Finally, we add the required code of the picker.
+```
+func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    guard let image = info[.editedImage] as? UIImage else { return }
+    
+    dismiss(animated: true)
+    
+    currentImage = image
+}
+```
+
+3. If we want to use `CoreImage` we need to import it: `import CoreImage`. Then, we need to add to variables: The `CIContext` and the `CIFilter`. This variables will be initialize in the `viewDidLoad`:
+```
+context = CIContext()
+currentFilter = CIFilter(name: "CISepiaTone")
+```
+
+4. We need to add this code to the end of the `didFinishPickingMediaWithInfo`:
+```
+let beginImage = CIImage(image: currentImage)
+currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
+
+applyProcessing()
+```
+
+5. We need to add the `applyProcessing` method to the slider action. This method is the one that add the filter to the image.
+```
+func applyProcessing() {
+    currentFilter.setValue(intensity.value, forKey: kCIInputIntensityKey)
+
+    if let cgimg = context.createCGImage(currentFilter.outputImage!, from: currentFilter.outputImage!.extent) {
+        let processedImage = UIImage(cgImage: cgimg)
+        imageView.image = processedImage
+    }
+}
+```
