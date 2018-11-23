@@ -475,7 +475,7 @@ cell.imageView.image = UIImage(contentsOfFile: path.path)
 
 1. SpriteKit equivalent to IB is named Scene Editor.
 
-2. To the project to a vanilla state we need to:
+2. To set the project to a vanilla state we need to:
 - Change the code from GameScene.swift
 ```
 import SpriteKit
@@ -657,3 +657,10 @@ func applyProcessing() {
     }
 }
 ```
+
+## Project14: Whack-a-Penguin
+
+1. To set a SpriteKit clean project:
+- Delete Actions.sks.
+- Open GameScene.sks and delete the “Hello World” label.
+- Change the scene’s anchor point to X:0 Y:0, its width to 1024 and its height to 768.
